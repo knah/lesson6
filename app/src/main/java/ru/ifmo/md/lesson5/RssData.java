@@ -22,11 +22,13 @@ public class RssData {
 
     public final String rssName;
     public final String rssDescription;
+    public final URL rssUrl;
     private ArrayList<RssEntry> entries;
 
-    public RssData(String rssName, String rssDescription) {
+    public RssData(String rssName, String rssDescription, URL rssUrl) {
         this.rssDescription = rssDescription;
         this.rssName = rssName;
+        this.rssUrl = rssUrl;
         this.entries = new ArrayList<RssEntry>();
     }
 

@@ -2,9 +2,7 @@
 <resources>
 
     <string name="app_name">SimpleRSS</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_rss">RssActivity</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_rss">Articles</string>
+    <string name="title_activity_article_view">Article</string>
 
 </resources>
