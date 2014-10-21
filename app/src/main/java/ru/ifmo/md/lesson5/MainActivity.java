@@ -6,6 +6,8 @@ import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
@@ -116,6 +118,21 @@ public class MainActivity extends Activity {
 
         ((ListView) findViewById(R.id.listViewFeeds)).setAdapter(new FeedListAdapter());
 
-        RssStorage.preloadFeeds(addrs);
+        RssStorage.preloadFeeds(addrs, getApplicationContext());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_reload, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_reload) {
+            RssStorage.refreshFeeds(getApplicationContext());
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

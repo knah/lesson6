@@ -23,12 +23,8 @@
             android:label="@string/title_activity_rss" >
         </activity>
         <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings">
-        </activity>
-        <activity
             android:name=".ArticleViewActivity"
-            android:label="@string/title_activity_article_view">
+            android:label="@string/title_activity_article_view" >
         </activity>
     </application>
 

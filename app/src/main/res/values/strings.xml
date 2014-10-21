@@ -4,5 +4,7 @@
     <string name="app_name">SimpleRSS</string>
     <string name="title_activity_rss">Articles</string>
     <string name="title_activity_article_view">Article</string>
+    <string name="internet_problems">Unable to load feeds</string>
+    <string name="action_reload">Reload</string>
 
 </resources>

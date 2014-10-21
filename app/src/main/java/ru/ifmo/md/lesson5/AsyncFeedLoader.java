@@ -1,7 +1,9 @@
 package ru.ifmo.md.lesson5;
 
+import android.content.Context;
 import android.database.DataSetObservable;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -140,18 +142,23 @@ public class AsyncFeedLoader extends AsyncTask<URL, Void, RssData[]> {
             for (RssData d : result)
                 if (d != null)
                     realResult[cnt++] = d;
+        } else {
+            Toast.makeText(context, R.string.internet_problems, Toast.LENGTH_SHORT).show();
         }
+
         callback.run(realResult);
         observable.notifyInvalidated();
     }
 
-    public AsyncFeedLoader(DataSetObservable observable, ResultCallback callback) {
+    public AsyncFeedLoader(DataSetObservable observable, ResultCallback callback, Context context) {
         this.observable = observable;
         this.callback = callback;
+        this.context = context;
     }
 
     private DataSetObservable observable;
     private ResultCallback callback;
+    private Context context;
 
     public interface ResultCallback {
         public void run(RssData[] result);
