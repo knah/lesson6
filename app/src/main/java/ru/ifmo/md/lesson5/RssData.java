@@ -8,23 +8,10 @@ import java.util.ArrayList;
  */
 public class RssData {
 
-    public class RssEntry {
-        public final String title;
-        public final String description;
-        public final URL url;
-
-        public RssEntry(String title, String description, URL url) {
-            this.title = title;
-            this.description = description;
-            this.url = url;
-        }
-    }
-
     public final String rssName;
     public final String rssDescription;
     public final URL rssUrl;
     private ArrayList<RssEntry> entries;
-
     public RssData(String rssName, String rssDescription, URL rssUrl) {
         this.rssDescription = rssDescription;
         this.rssName = rssName;
@@ -42,6 +29,18 @@ public class RssData {
 
     public RssEntry getEntry(int index) {
         return entries.get(index);
+    }
+
+    public class RssEntry {
+        public final String title;
+        public final String description;
+        public final URL url;
+
+        public RssEntry(String title, String description, URL url) {
+            this.title = title;
+            this.description = description;
+            this.url = url;
+        }
     }
 
 }

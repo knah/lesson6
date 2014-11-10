@@ -2,98 +2,42 @@ package ru.ifmo.md.lesson5;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.DataSetObserver;
+import android.database.Cursor;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListAdapter;
+import android.widget.CursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Created by kna on 17.10.2014.
  */
-public class RssArticlesAdapter implements ListAdapter {
+public class RssArticlesAdapter extends CursorAdapter {
 
-    private Set<DataSetObserver> observers = Collections.newSetFromMap(new WeakHashMap<DataSetObserver, Boolean>()); // todo: fix this maybe
-    private final Context context;
-    private final int feedId;
-
-
-    public RssArticlesAdapter(int feedId, Context context) {
-        this.context = context;
-        this.feedId = feedId;
+    public RssArticlesAdapter(Context context, Cursor c, boolean autoRequery) {
+        super(context, c, autoRequery);
     }
 
     @Override
-    public boolean areAllItemsEnabled() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled(int i) {
-        return false;
-    }
-
-    @Override
-    public void registerDataSetObserver(DataSetObserver dataSetObserver) {
-        RssStorage.getObserverInstance().registerObserver(dataSetObserver); // this generally has to be fixed
-    }
-
-    @Override
-    public void unregisterDataSetObserver(DataSetObserver dataSetObserver) {
-        RssStorage.getObserverInstance().unregisterObserver(dataSetObserver);
-    }
-
-    @Override
-    public int getCount() {
-        RssData rssData = RssStorage.getFeeds()[feedId];
-        if (rssData == null)
-            return 0;
-
-        return rssData.getEntryCount();
-    }
-
-    @Override
-    public Object getItem(int i) {
-        RssData rssData = RssStorage.getFeeds()[feedId];
-        if (rssData == null)
-            return null;
-
-        return rssData.getEntry(i);
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return 0; // no idea
-    }
-
-    @Override
-    public boolean hasStableIds() {
-        return false;
-    }
-
-    @Override
-    public View getView(final int i, View view, ViewGroup viewGroup) {
-        RssData rssData = RssStorage.getFeeds()[feedId];
-        if (rssData == null)
-            return null;
-
-        View w = view;
-        if (w == null)
-            w = LayoutInflater.from(context).inflate(R.layout.layout_news_entry, null);
-        final RssData.RssEntry entry = (RssData.RssEntry) getItem(i);
-        ((TextView) w.findViewById(R.id.textHeading)).setText(entry.title);
-        ((TextView) w.findViewById(R.id.textDescription)).setText(Html.fromHtml(entry.description));
+    public View newView(final Context context, final Cursor cursor, ViewGroup viewGroup) {
+        View w = LayoutInflater.from(context).inflate(R.layout.layout_news_entry, null);
+        ((TextView) w.findViewById(R.id.textHeading)).setText(cursor.getString(cursor.getColumnIndex(RssDatabase.Structure.ARTICLES_COLUMN_NAME)));
+        ((TextView) w.findViewById(R.id.textDescription)).setText(Html.fromHtml(cursor.getString(cursor.getColumnIndex(RssDatabase.Structure.ARTICLES_COLUMN_DESCRIPTION))));
+        final String us = cursor.getString(cursor.getColumnIndex(RssDatabase.Structure.ARTICLES_COLUMN_URL));
         w.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent it = new Intent(context, ArticleViewActivity.class);
-                it.putExtra("url", entry.url);
+                try {
+                    it.putExtra("url", new URL(us));
+                } catch (MalformedURLException e) {
+                    Toast.makeText(context, context.getString(R.string.article_invalid_url), Toast.LENGTH_SHORT).show();
+                }
                 context.startActivity(it);
             }
         });
@@ -101,19 +45,22 @@ public class RssArticlesAdapter implements ListAdapter {
     }
 
     @Override
-    public int getItemViewType(int i) {
-        return 0;
+    public void bindView(View view, final Context context, final Cursor cursor) {
+        View w = view;
+        ((TextView) w.findViewById(R.id.textHeading)).setText(cursor.getString(cursor.getColumnIndex(RssDatabase.Structure.ARTICLES_COLUMN_NAME)));
+        ((TextView) w.findViewById(R.id.textDescription)).setText(Html.fromHtml(cursor.getString(cursor.getColumnIndex(RssDatabase.Structure.ARTICLES_COLUMN_DESCRIPTION))));
+        final String us = cursor.getString(cursor.getColumnIndex(RssDatabase.Structure.ARTICLES_COLUMN_URL));
+        w.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent it = new Intent(context, ArticleViewActivity.class);
+                try {
+                    it.putExtra("url", new URL(us));
+                } catch (MalformedURLException e) {
+                    Toast.makeText(context, context.getString(R.string.article_invalid_url), Toast.LENGTH_SHORT).show();
+                }
+                context.startActivity(it);
+            }
+        });
     }
-
-    @Override
-    public int getViewTypeCount() {
-        return 1;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        RssData rssData = RssStorage.getFeeds()[feedId];
-        return rssData == null || rssData.getEntryCount() == 0;
-    }
-
 }

@@ -26,6 +26,18 @@
             android:name=".ArticleViewActivity"
             android:label="@string/title_activity_article_view" >
         </activity>
+
+        <provider
+            android:name=".RssContentProvider"
+            android:authorities="ru.ifmo.md.lesson6.rss"
+            android:enabled="true"
+            android:exported="false" >
+        </provider>
+
+        <service
+            android:name=".RssLoaderService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>
